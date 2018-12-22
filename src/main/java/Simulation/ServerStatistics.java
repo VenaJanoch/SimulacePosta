@@ -3,14 +3,14 @@ package Simulation;
 import cz.zcu.fav.kiv.jsim.JSimHead;
 import cz.zcu.fav.kiv.jsim.JSimProcess;
 
-public class Statistics implements IStatistic {
-    protected JSimProcess source;
-    protected JSimHead queue;
+public class ServerStatistics {
+    private JSimProcess source;
+    private JSimHead queue;
     private long requestCount;
     private double sumOfTq;
     private double sumOfProcessingTime;
 
-    public Statistics(JSimProcess source, JSimHead queue) {
+    public ServerStatistics(JSimProcess source, JSimHead queue) {
         this.source = source;
         this.queue = queue;
 

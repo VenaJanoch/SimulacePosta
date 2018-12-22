@@ -7,14 +7,22 @@ public class Server extends JSimProcess implements IRequestAcceptor {
     private JSimHead queue;
     private IGenerator generator;
     private IRequestAcceptor output;
-    private IStatistic statistics;
+    private ServerStatistics statistics;
+    private QueueStatistics queueStatistics;
 
     public Server(String name, JSimSimulation jSimSimulation, IGenerator generator) throws JSimSimulationAlreadyTerminatedException, JSimInvalidParametersException, JSimTooManyProcessesException, JSimTooManyHeadsException {
         super(name, jSimSimulation);
 
         this.queue = new JSimHead(name + " - Queue", jSimSimulation);
         this.generator = generator;
-        this.statistics = new Statistics(this, queue);
+        this.statistics = new ServerStatistics(this, queue);
+    }
+
+
+    public Server(String name, JSimSimulation jSimSimulation, IGenerator generator, QueueStatistics queueStatistics) throws JSimSimulationAlreadyTerminatedException, JSimInvalidParametersException, JSimTooManyProcessesException, JSimTooManyHeadsException {
+        this(name, jSimSimulation, generator);
+        this.queueStatistics = queueStatistics;
+        queueStatistics.setQueue(queue);
     }
 
     @Override
@@ -33,11 +41,15 @@ public class Server extends JSimProcess implements IRequestAcceptor {
 
                     hold(processingTime);
 
-                    if (statistics != null)
+                    if (statistics != null){
                         statistics.processRequest(request, link.getEnterTime(), processingTime);
+                    }
+
+                    if (queueStatistics != null){
+                        queueStatistics.processRequest();
+                    }
 
                     link.out();
-
                     if (output != null)
                         output.acceptRequest(request);
 
@@ -75,7 +87,11 @@ public class Server extends JSimProcess implements IRequestAcceptor {
         this.output = output;
     }
 
-    public IStatistic getStatistics() {
+    public ServerStatistics getStatistics() {
         return statistics;
+    }
+
+    public QueueStatistics getQueueStatistics() {
+        return queueStatistics;
     }
 }

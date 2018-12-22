@@ -25,4 +25,5 @@ public class Constans {
     public static final double P5 = 0.4;
 
 
+    public static final int histogramSize = 10;
 }

@@ -15,7 +15,7 @@ public class Simulation {
 
     // how many request has already passed through
     private int totalPassedRequests = 0;
-
+    private Histogram histogram = new Histogram(Constans.histogramSize);
     public void runSimulation(int count){
         runSimulation(count, -1);
     }
@@ -38,7 +38,7 @@ public class Simulation {
             if (variance == -1) {
                 simulation.message("\nSpoustim simulaci pro exponencialni rozdeleni:");
 
-                post = new Server("Postovni prepazka", simulation, new ExpGenerator(Constans.MI1));
+                post = new Server("Postovni prepazka", simulation, new ExpGenerator(Constans.MI1), new QueueStatistics("Postovni prepazka"));
                 internet = new Server("Elektronicka prihlaska", simulation, new ExpGenerator(Constans.MI2));
                 portal = new Server("Informační systém", simulation, new ExpGenerator(Constans.MI3));
                 ministry = new Server("Ministerstvo vnitra CR", simulation, new ExpGenerator(Constans.MI4));
@@ -134,7 +134,7 @@ public class Simulation {
             for (Server item : servers) {
                 simulation.message("Statistika mistosti " + item.getName() + ":");
 
-                IStatistic statistics =  item.getStatistics();
+                ServerStatistics statistics =  item.getStatistics();
                 simulation.message("  Lq = " + statistics.getLq());
                 simulation.message("  Tq = " + statistics.getTq());
                 simulation.message("  load = " + statistics.getLoad());
@@ -143,6 +143,8 @@ public class Simulation {
                 sumOfRequest+= statistics.getRequestCount();
                 lq+= statistics.getLq();
             }
+
+
 
             sumOfRequest = 0;
             double sumOfTq = 0;
@@ -158,6 +160,16 @@ public class Simulation {
             simulation.message("Celkovy pocet pacientu: " + total);
 
 
+            QueueStatistics queueStatistics = servers.get(0).getQueueStatistics();
+            simulation.message("Statistika fronty " + queueStatistics.getName() + ":");
+            simulation.message("  Stredni delka: " + queueStatistics.getQueueLengthMedian());
+            simulation.message("  Rozptyl: " + queueStatistics.getQueueLengthVariance());
+            simulation.message("  Smerodatna odchylka: " + queueStatistics.getQueueLengthSigma());
+            simulation.message("  Minimalni delka: " + queueStatistics.getMinQueueLength());
+            simulation.message("  maximalni delka: " + queueStatistics.getMaxQueueLength());
+            histogram.createHistogram(queueStatistics.getQueueHistogram());
+            simulation.message("Histogram:");
+            simulation.message(histogram.printHistogram());
 
         } catch (JSimInvalidParametersException e) {
             e.printStackTrace();
