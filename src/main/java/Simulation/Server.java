@@ -16,7 +16,7 @@ public class Server extends JSimProcess implements IRequestAcceptor {
         this.queue = new JSimHead(name + " - Queue", jSimSimulation);
         this.generator = generator;
         this.statistics = new ServerStatistics(this, queue);
-    }
+}
 
 
     public Server(String name, JSimSimulation jSimSimulation, IGenerator generator, QueueStatistics queueStatistics) throws JSimSimulationAlreadyTerminatedException, JSimInvalidParametersException, JSimTooManyProcessesException, JSimTooManyHeadsException {
@@ -29,7 +29,7 @@ public class Server extends JSimProcess implements IRequestAcceptor {
     protected void life() {
         try {
             while(true) {
-                //pokud je prazdna fronta uspime process
+
                 if (queue.empty()) {
                     passivate();
                 } else {
@@ -42,7 +42,7 @@ public class Server extends JSimProcess implements IRequestAcceptor {
                     hold(processingTime);
 
                     if (statistics != null){
-                        statistics.processRequest(request, link.getEnterTime(), processingTime);
+                        statistics.processRequest(link.getEnterTime(), processingTime);
                     }
 
                     if (queueStatistics != null){
@@ -50,9 +50,9 @@ public class Server extends JSimProcess implements IRequestAcceptor {
                     }
 
                     link.out();
-                    if (output != null)
+                    if (output != null){
                         output.acceptRequest(request);
-
+                    }
                 }
             }
         } catch (JSimSecurityException e) {
@@ -77,10 +77,6 @@ public class Server extends JSimProcess implements IRequestAcceptor {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public IRequestAcceptor getOutput() {
-        return output;
     }
 
     public void setOutput(IRequestAcceptor output) {

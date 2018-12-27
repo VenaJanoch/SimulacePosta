@@ -27,7 +27,7 @@ public class ServerStatistics {
         sumOfProcessingTime = 0;
     }
 
-    public void processRequest(Request request, double queueEnterTime, double processingTime) {
+    public void processRequest(double queueEnterTime, double processingTime) {
 
         requestCount++;
 
@@ -70,30 +70,6 @@ public class ServerStatistics {
     }
 
     /**
-     * Vraci pocet zpracovanych pozadavku
-     * @return	pocet zpracovanych pozadavku
-     */
-    public long getRequestCount() {
-        return requestCount;
-    }
-
-    /**
-     * Vraci referenci na objekt zdroje, na kterem se pocita statistika
-     * @return	referenci na zdroj
-     */
-    public JSimProcess getSource() {
-        return source;
-    }
-
-    /**
-     * Vraci frontu zdroje
-     * @return	fronta zdroje
-     */
-    public JSimHead getQueue() {
-        return queue;
-    }
-
-    /**
      * Vraci stredni pocet pozadavku zdroje
      * @return	stredni pocet zdroje
      */
@@ -101,4 +77,7 @@ public class ServerStatistics {
         return getLoad() / (1 - getLoad());
     }
 
+    public long getRequestCount() {
+        return requestCount;
+    }
 }

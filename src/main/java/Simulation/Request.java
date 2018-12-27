@@ -5,8 +5,8 @@ public class Request {
     private double inputTime;
 
     /**
-     * Konstruktor pacienta s udanim casu prichodu do simulace
-     * @param inputTime	cas prichodu do simulace
+     * Konstruktor pozadavku s casem prichodu do simulace
+     * @param inputTime
      */
     protected Request(double inputTime) {
         this.inputTime = inputTime;

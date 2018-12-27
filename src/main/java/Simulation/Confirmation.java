@@ -14,7 +14,11 @@ public class Confirmation implements IRequestAcceptor {
         this.simulation = simulation;
     }
 
-
+    public void acceptRequest(Request request) {
+        locSimulation.requestLeftSystem();
+        requestCount++;
+        sumOfTq+= simulation.getCurrentTime() - request.getInputTime();
+    }
 
     public double getSumOfTq() {
         return sumOfTq;
@@ -22,11 +26,5 @@ public class Confirmation implements IRequestAcceptor {
 
     public long getRequestCount() {
         return requestCount;
-    }
-
-    public void acceptRequest(Request request) {
-        locSimulation.requestLeftSystem();
-        requestCount++;
-        sumOfTq+= simulation.getCurrentTime() - request.getInputTime();
     }
 }

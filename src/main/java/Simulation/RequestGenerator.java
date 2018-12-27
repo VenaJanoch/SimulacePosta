@@ -6,8 +6,7 @@ import cz.zcu.fav.kiv.jsim.*;
 public class RequestGenerator extends JSimProcess{
 
     private Simulation locSimulation;
-    private Long numbersCount;
-    private Long numbersAlreadyGenerated = 0l;
+    private Long numbersCount = 0L;
 
     private IGenerator generator;
     private IRequestAcceptor  output;
@@ -27,11 +26,11 @@ public class RequestGenerator extends JSimProcess{
             while(locSimulation.requestEnteredToSystem() > 0) {
                 hold(Math.abs(generator.getNextValue()));
 
-                numbersAlreadyGenerated++;
+                numbersCount++;
 
-                if (output != null)
+                if (output != null){
                     output.acceptRequest(new Request(myParent.getCurrentTime()));
-
+                }
             }
 
         } catch (JSimSecurityException e) {
@@ -42,11 +41,7 @@ public class RequestGenerator extends JSimProcess{
     }
 
     public Long getNumbersCount() {
-        return numbersAlreadyGenerated;
-    }
-
-    public IRequestAcceptor getOutput() {
-        return output;
+        return numbersCount;
     }
 
     public void setOutput(IRequestAcceptor output) {

@@ -3,19 +3,19 @@ package Simulation;
 import Generators.IGenerator;
 import Generators.UniformGenerator;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Cross implements IRequestAcceptor {
-    private HashMap<Double, IRequestAcceptor> crossMap;
-    private double currentMaxProbably = 0;
+    private Set<CrossTarget> crossSet;
+    private double probably = 0;
     private IGenerator generator;
 
     /**
      * Konstruktor tridy pro vytvoreni volby cile pozadavku na zaklade pravdepodobnosti
      */
     public Cross() {
-        crossMap = new HashMap<Double, IRequestAcceptor>();
-
+        crossSet = new HashSet<CrossTarget>();
         generator = new UniformGenerator(0, 1);
     }
 
@@ -25,7 +25,7 @@ public class Cross implements IRequestAcceptor {
      * @return referenci tridy
      */
     public Cross addChoice(IRequestAcceptor destination) {
-        return addChoice(1 - currentMaxProbably, destination);
+        return addChoice(1 - probably, destination);
     }
 
     /**
@@ -35,38 +35,36 @@ public class Cross implements IRequestAcceptor {
      * @return referenci tridy
      */
     public Cross addChoice(double probably, IRequestAcceptor destination) {
-        currentMaxProbably+= probably;
+        this.probably += probably;
 
         if (probably < 0 || probably > 1)
             throw new IllegalArgumentException("Zadana pravdepodobnost musi byt v rozsahu <0,1>.");
 
-        if (currentMaxProbably > 1)
+        if (this.probably > 1)
             throw new IllegalArgumentException("Celkova pravdepodobnost musi byt mensi nebo rovna 1.");
 
-        crossMap.put(currentMaxProbably, destination);
+        crossSet.add(new CrossTarget(probably, destination)); //TODO mozna chyba, v predesle verzi je this.probably
 
         return this;
     }
 
     public void acceptRequest(Request request) {
-        Double latesProbability = new Double(0);
-
+        CrossTarget latesTarget = new CrossTarget(0, null);
         double number = generator.getNextValue();
 
-        if (crossMap.isEmpty())
+        if (crossSet.isEmpty()){
             return;
+        }
 
         // vybereme dle pravdepodobnosti prislusnou volbu a predame pozadavek
-        for (Double probability: crossMap.keySet()) {
-            latesProbability = probability;
-
-            if (number <= latesProbability) {
-                crossMap.get(probability).acceptRequest(request);
+        for (CrossTarget target: crossSet) {
+            latesTarget = target;
+            if (number <= target.getProbability()) {
+                target.getDestination().acceptRequest(request);
                 return;
             }
         }
 
-        // osetrime volbu, pokud posledni ma pravdepodobnost mensi nez 1
-        crossMap.get(latesProbability).acceptRequest(request);
+        latesTarget.getDestination().acceptRequest(request);
     }
 }

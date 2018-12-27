@@ -15,7 +15,7 @@ public class ExpGenerator implements IGenerator {
 
     public double getNextValue()
     {
-        return  Math.log(1-rng.nextDouble())/(-lambda);
+        return  Math.log(1-Math.random())/(-lambda);
     }
 
 

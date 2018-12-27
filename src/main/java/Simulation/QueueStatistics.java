@@ -3,7 +3,6 @@ package Simulation;
 import cz.zcu.fav.kiv.jsim.JSimHead;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class QueueStatistics {
 
@@ -49,15 +48,15 @@ public class QueueStatistics {
     }
 
     /**
-     * Vrac� st�edn� delku fronty
-     * @return	st�edn� delka fronty
+     * Vraci stredni delku fronty
+     * @return	stredni delka fronty
      */
     public double getQueueLengthMedian() {
         return ((double)sumOfQueueLength) / request;
     }
 
     /**
-     * Vrac� rozptyl delky fronty
+     * Vraci rozptyl delky fronty
      * @return	rozptyl delky fronty
      */
     public double getQueueLengthVariance() {
@@ -88,19 +87,6 @@ public class QueueStatistics {
      */
     public long getMinQueueLength() {
         return minQueueLength;
-    }
-
-    /**
-     * Vraci velikost kroku histogramu fronty
-     * @param size	velikost histrogramu (pocet sloupcu)
-     * @return	velikost kroku
-     */
-    public double getQueueLengthHistogramStep(int size) {
-        return Math.abs((double)maxQueueLength-minQueueLength) / size;
-    }
-
-    public JSimHead getQueue() {
-        return queue;
     }
 
     public void setQueue(JSimHead queue) {
